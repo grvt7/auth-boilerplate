@@ -1,0 +1,9 @@
+const loginTypes = {
+  LOGIN: 'LOGIN',
+  LOGIN_START: 'LOGIN_START',
+  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  LOGIN_FAIL: 'LOGIN_FAIL',
+  LOGIN_RESET: 'LOGIN_RESET'
+};
+
+export { loginTypes };
