@@ -1,27 +1,29 @@
 /* eslint-disable */
 /*@ts-ignore */
 
+import { logger } from '@/utils/logger';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { getSession } from 'next-auth/react';
+import { getCookie, setCookie } from 'cookies-next';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
-const handleResponseInterception = (response: AxiosResponse) =>
-  response && response.data;
+const handleResponseInterception = (response: AxiosResponse) => {
+  return response;
+};
+
 
 const handleRequestInterception = async (config: any) => {
   let {
     headers: { common }
   } = config;
 
-  // Get the session from next-auth (session contains the access token)
-  // const session = await getSession();
+  // Get the token from the HTTP-only cookie
+  const token = getCookie('accessToken');
 
-  // if (session && session.accessToken) {
-  //   common = { ...common, Authorization: `Bearer ${session.accessToken}` };
-  // }
+  if (token) {
+    common = { ...common, Authorization: `Bearer ${token}` };
+  }
 
-  // console.log('Api Service : ', session);
   config.headers.common = common;
   return config;
 };

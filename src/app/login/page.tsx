@@ -1,45 +1,48 @@
 'use client';
 
+import { logger } from '@/utils/logger';
 import {
   Button,
   Checkbox,
   PasswordInput,
   Text,
-  TextInput
+  TextInput,
 } from '@mantine/core';
+import { setCookie } from 'cookies-next';
 import { useFormik } from 'formik';
 import { signIn } from 'next-auth/react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-import * as yup from 'yup';
+// import * as yup from 'yup';
 
 const Login = () => {
+  const router = useRouter();
   const initialValues = {
     usernameOrEmail: '',
     password: '',
-    rememberMe: false
+    rememberMe: false,
   };
-  const validationSchema = yup.object({
-    usernameOrEmail: yup
-      .string()
-      .required('Username or Email is required')
-      .test(
-        'username or email',
-        'Must be a valid email or username',
-        function (value) {
-          const isEmail = yup.string().email().isValidSync(value);
-          const isUsername = yup
-            .string()
-            .min(3, 'Username too short')
-            .isValidSync(value);
-          return isEmail || isUsername;
-        }
-      ),
-    password: yup
-      .string()
-      .min(8, 'Password must be at least 8 characters long')
-      .required('Password is required')
-  });
+  // const validationSchema = yup.object({
+  //   usernameOrEmail: yup
+  //     .string()
+  //     .required('Username or Email is required')
+  //     .test(
+  //       'username or email',
+  //       'Must be a valid email or username',
+  //       function (value) {
+  //         const isEmail = yup.string().email().isValidSync(value);
+  //         const isUsername = yup
+  //           .string()
+  //           .min(3, 'Username too short')
+  //           .isValidSync(value);
+  //         return isEmail || isUsername;
+  //       }
+  //     ),
+  //   password: yup
+  //     .string()
+  //     .min(8, 'Password must be at least 8 characters long')
+  //     .required('Password is required')
+  // });
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -54,18 +57,19 @@ const Login = () => {
       const credentials = {
         username: isEmail(usernameOrEmail) ? undefined : usernameOrEmail,
         email: isEmail(usernameOrEmail) ? usernameOrEmail : undefined,
-        password
+        password,
       };
       const result = await signIn('credentials', {
-        redirect: true,
         ...credentials,
-        callbackUrl: '/'
       });
 
       if (result?.error) {
+        logger.info('result', result);
         console.error(result.error);
+      } else {
+        router.replace('/');
       }
-    }
+    },
   });
   return (
     <div className="h-full flex justify-center items-center overflow-hidden">

@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import { MantineProvider } from '@mantine/core';
 import configureAppStore from '@/store';
 import '@mantine/core/styles.css';
-import { SessionProvider } from 'next-auth/react';
 
 const store = configureAppStore();
 
@@ -15,19 +14,13 @@ const store = configureAppStore();
 // });
 
 export default function ClientOnlyProvider({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <React.StrictMode>
-      <SessionProvider>
-        <Provider store={store}>
-          <MantineProvider defaultColorScheme="dark">
-            {children}
-          </MantineProvider>
-        </Provider>
-      </SessionProvider>
-    </React.StrictMode>
+    <Provider store={store}>
+      <MantineProvider defaultColorScheme="dark">{children}</MantineProvider>
+    </Provider>
   );
 }

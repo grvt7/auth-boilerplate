@@ -1,11 +1,10 @@
 /* eslint-disable */
 /*@ts-ignore */
-import { getSession } from 'next-auth/react';
+import { getCookie } from 'cookies-next';
 
 export const getDecodedToken = async () => {
-  const session = await getSession();
-  if (session && session.accessToken) {
-    const token = session.accessToken;
+  const token = getCookie('accessToken');
+  if (token) {
     const decoded = jwtDecode(token);
     return decoded;
   }
@@ -13,25 +12,24 @@ export const getDecodedToken = async () => {
 };
 
 export const validateTokenAlgo = async () => {
-  const session = await getSession();
-  if (session && session.accessToken) {
-    const decodedHeader = jwtDecode(session.accessToken, { header: true });
+  const token = getCookie('accessToken');
+  if (token) {
+    const decodedHeader = jwtDecode(token, { header: true });
     return decodedHeader?.alg;
   }
   return null;
 };
 
 export const getToken = async () => {
-  const session = await getSession();
-  return session ? session.accessToken : null;
+  const token = getCookie('accessToken');
+  return token ? token : null;
 };
 
 export const isExpired = (tokenExpiration) => {
   const expirationDate = new Date(0);
   expirationDate.setUTCSeconds(tokenExpiration);
 
-  if (expirationDate <= new Date()) return true;
-  return false;
+  return expirationDate <= new Date();
 };
 
 // My react way of doing the same

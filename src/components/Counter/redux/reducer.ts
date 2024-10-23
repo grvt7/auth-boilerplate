@@ -7,7 +7,7 @@ const initialState = {
 };
 
 export const counterReducerComp = (state = initialState, action: AnyAction) => {
-  const { type, payload } = action;
+  const { type } = action;
   switch (type) {
     case testComponentTypes.COUNTER_INC: {
       const newCounterValue = state.counter + 1;
